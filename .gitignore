@@ -1,0 +1,8 @@
+build/
+release/
+
+user/
+icons/
+griddb_cache/
+
+__pycache__/

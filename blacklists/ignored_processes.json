@@ -1,0 +1,18 @@
+[
+  "sh",
+  "steam",
+  "python3",
+  "pv-adverb",
+  "srt-bwrap",
+  "wineserver",
+  "services",
+  "winedevice",
+  "plugplay",
+  "svchost",
+  "lsass",
+  "explorer",
+  "rpcss",
+  "tabtip",
+  "reaper",
+  "steam-runtime-launch-client"
+]

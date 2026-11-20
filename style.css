@@ -1,0 +1,46 @@
+/* Card Container Base */
+scrolledwindow.card {
+    border-radius: 12px;
+    background-color: transparent;
+}
+
+/* Viewport & List/TextView Containers */
+scrolledwindow.card > viewport,
+scrolledwindow.card textview,
+scrolledwindow.card textview > text {
+    border-radius: 12px;
+    background-color: #242424;
+}
+
+/* Sidebar List Styling */
+scrolledwindow.card list {
+    border-radius: 12px;
+    background-color: #242424;
+}
+
+scrolledwindow.card list > row:first-child {
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+scrolledwindow.card list > row:last-child {
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+/* Hover & Selection Highlights */
+scrolledwindow.card list > row:hover {
+    background-color: color-mix(in srgb, @accent_bg_color 15%, transparent);
+}
+
+scrolledwindow.card list > row:selected {
+    background-color: @accent_bg_color;
+    color: @accent_fg_color;
+}
+
+/* Scrollbar Clipping */
+scrolledwindow.card scrollbar {
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+    background-color: transparent;
+}
