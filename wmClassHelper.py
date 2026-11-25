@@ -152,6 +152,8 @@ class WMClassHelper:
         return "N/A"
 
     def _extract_wmclass(self, cmdline_args: list[str], environ_args: list[str], comm: str = "", appid: str = "") -> str:
+        is_wayland = "PROTON_ENABLE_WAYLAND=1" in environ_args
+        is_valid_appid = appid not in ("", "0", "N/A")
 
         for arg in cmdline_args:
             if not arg or arg.startswith("-"):
@@ -159,14 +161,36 @@ class WMClassHelper:
 
             wmclass = self._normalize_path(arg)
 
-            if wmclass.lower().endswith(".exe") and "PROTON_ENABLE_WAYLAND=1" in environ_args:
+            if wmclass.lower().endswith(".exe") and is_wayland and not self._proton_wayland_version(environ_args):
                 return wmclass.lower()
-            elif wmclass.lower().endswith(".exe"):
+            elif wmclass.lower().endswith(".exe") and is_valid_appid:
                 return f"steam_app_{appid}"
+            elif wmclass.lower().endswith(".exe"):
+                return wmclass.lower()
 
             return wmclass
 
         return comm
+
+    def _proton_wayland_version(self, environ_args: list[str]) -> bool:
+        for entry in environ_args:
+            if not entry.startswith("STEAM_COMPAT_TOOL_PATHS="):
+                continue
+
+            proton_directory = entry.split("=", 1)[1].split(":", 1)[0]
+
+            for path in (
+                "files/lib/wine/x86_64-unix/winewayland.so",
+                "files/lib64/wine/x86_64-unix/winewayland.so",
+                "files/lib/wine/x86_64-unix/winewayland.drv.so",
+                "files/lib64/wine/x86_64-unix/winewayland.drv.so",
+            ):
+                so_path = os.path.join(proton_directory, path)
+                if os.path.exists(so_path):
+                    with open(so_path, "rb") as file:
+                        return b"steam_app_" in file.read()
+
+        return False
 
     def _extract_process_name(self, cmdline_args: list[str], comm: str = "") -> str:
         for arg in cmdline_args:
