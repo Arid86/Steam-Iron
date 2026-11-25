@@ -7,8 +7,10 @@ from configManager import ConfigManager
 
 logger = logging.getLogger(__name__)
 
+XDG_CACHE_HOME = os.environ.get("XDG_CACHE_HOME", os.path.expanduser("~/.cache"))
+
 HOST_PROCESSES_PATH = "/proc"
-FLATPAK_PROCESSES_PATH = "/tmp/steam-iron"
+FLATPAK_PROCESSES_PATH = os.path.join(XDG_CACHE_HOME, "steam-iron", "process_cache")
 
 # configManager is used now and flatpak needs its own path.
 #
@@ -57,8 +59,8 @@ class WMClassHelper:
                     "sh",
                     "-c",
                     (
-                        f"rm -rf {FLATPAK_PROCESSES_PATH} && "
-                        f"mkdir -p {FLATPAK_PROCESSES_PATH} && "
+                        f"rm -rf \"{FLATPAK_PROCESSES_PATH}\" && "
+                        f"mkdir -p \"{FLATPAK_PROCESSES_PATH}\" && "
                         f"for p in /proc/[0-9]*; do "
                         f" [ -r \"$p/environ\" ] || continue; "
                         f" d=\"{FLATPAK_PROCESSES_PATH}/${{p#/proc/}}\"; "
