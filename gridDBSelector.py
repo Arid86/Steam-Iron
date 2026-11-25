@@ -55,13 +55,19 @@ class SteamGridDBSelectorWindow(Adw.Window):
         self.progress_box.append(self.status_label)
         self.progress_box.append(self.progress_bar)
 
-        scrolled = Gtk.ScrolledWindow(hexpand=True, vexpand=True)
-        scrolled.add_css_class("card")
-        scrolled.set_can_focus(False)
-        scrolled.set_margin_start(12)
-        scrolled.set_margin_end(12)
-        scrolled.set_margin_top(6)
-        scrolled.set_margin_bottom(6)
+        self.status_page = Adw.StatusPage(vexpand=True)
+        self.status_page.set_icon_name("dialog-password-symbolic")
+        self.status_page.set_title("No SteamGridDB API Key Found")
+        self.status_page.set_description("Add your SteamGridDB API Key in Preferences to search and download icons. You will need to login to SteamGridDB with your Steam account. You'll be able to generate an api key from your account page.")
+        self.status_page.set_visible(False)
+
+        self.scrolled = Gtk.ScrolledWindow(hexpand=True, vexpand=True)
+        self.scrolled.add_css_class("card")
+        self.scrolled.set_can_focus(False)
+        self.scrolled.set_margin_start(12)
+        self.scrolled.set_margin_end(12)
+        self.scrolled.set_margin_top(6)
+        self.scrolled.set_margin_bottom(6)
 
         self.flowbox = Gtk.FlowBox()
         self.flowbox.set_can_focus(False)
@@ -77,7 +83,7 @@ class SteamGridDBSelectorWindow(Adw.Window):
         self.flowbox.set_margin_top(12)
         self.flowbox.set_margin_bottom(12)
 
-        scrolled.set_child(self.flowbox)
+        self.scrolled.set_child(self.flowbox)
 
         button_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
         button_box.set_margin_start(12)
@@ -99,7 +105,8 @@ class SteamGridDBSelectorWindow(Adw.Window):
 
         layout = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         layout.append(self.progress_box)
-        layout.append(scrolled)
+        layout.append(self.status_page)
+        layout.append(self.scrolled)
         layout.append(button_box)
 
         root_box.add_top_bar(header)
@@ -109,6 +116,12 @@ class SteamGridDBSelectorWindow(Adw.Window):
         self.flowbox.connect("child-activated", self._on_item_selected)
 
     def _load_icons(self) -> None:
+        if not self.helper.api_key:
+            self.progress_box.set_visible(False)
+            self.scrolled.set_visible(False)
+            self.status_page.set_visible(True)
+            return
+
         self.status_label.set_text("Connecting to SteamGridDB...")
         self.progress_bar.set_fraction(0.15)
         self._force_ui_update()
